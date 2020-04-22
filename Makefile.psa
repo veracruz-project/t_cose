@@ -26,7 +26,7 @@
 # This is for reference to QCBOR that has been installed in
 # /usr/local/ or in some system location.
 QCBOR_INC= -I ../QCBOR/inc
-QCBOR_LIB= -l qcbor
+QCBOR_LIB= -L ../QCBOR/ -l qcbor
 
 
 # ---- crypto configuration -----
@@ -39,7 +39,7 @@ QCBOR_LIB= -l qcbor
 
 # These two are for reference to MBed Crypto that has been installed in
 # /usr/local/ or in some system location.
-CRYPTO_LIB=-l mbedcrypto
+CRYPTO_LIB=-L ../mbed-crypto/library -l mbedcrypto
 CRYPTO_INC=-I ../mbed-crypto/include
 
 CRYPTO_CONFIG_OPTS=-DT_COSE_USE_PSA_CRYPTO
@@ -49,7 +49,7 @@ CRYPTO_TEST_OBJ=test/t_cose_make_psa_test_key.o
 
 # ---- compiler configuration -----
 # Optimize for size
-C_OPTS=-Os -fPIC
+C_OPTS=-fPIC
 
 # The following are used before a release of t_cose help to make sure
 # the code compiles and runs in the most strict environments, but not
@@ -65,7 +65,7 @@ TEST_OBJ=test/t_cose_test.o test/run_tests.o test/t_cose_sign_verify_test.o test
 # ---- the main body that is invariant ----
 INC=-I inc -I test -I src
 ALL_INC=$(CRYPTO_INC) $(QCBOR_INC) $(INC) 
-CFLAGS=$(ALL_INC) $(C_OPTS) $(TEST_CONFIG_OPTS) $(CRYPTO_CONFIG_OPTS)
+CFLAGS=$(ALL_INC) $(C_OPTS) $(TEST_CONFIG_OPTS) $(CRYPTO_CONFIG_OPTS) -g
 
 SRC_OBJ=src/t_cose_sign1_verify.o src/t_cose_sign1_sign.o src/t_cose_util.o src/t_cose_parameters.o
 
