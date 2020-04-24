@@ -103,6 +103,35 @@ static enum t_cose_err_t psa_status_to_t_cose_error_signing(psa_status_t err)
                                                   T_COSE_ERR_SIG_FAIL;
 }
 
+enum t_cose_err_t
+t_cose_load_pubkey(uint8_t const *p_pubkey,
+                   size_t pubkey_size,
+                   uint16_t *p_key_handle) {
+    psa_status_t status;
+
+    status = psa_crypto_init();
+    if (status != PSA_SUCCESS) {
+        return psa_status_to_t_cose_error_signing(status);
+    }
+
+    psa_key_attributes_t attributes = psa_key_attributes_init();
+    psa_set_key_usage_flags(&attributes, PSA_KEY_USAGE_VERIFY_HASH );
+    psa_set_key_algorithm(&attributes, PSA_ALG_ECDSA(PSA_ALG_SHA_256));
+    psa_set_key_type(&attributes, PSA_KEY_TYPE_ECC_PUBLIC_KEY(PSA_ECC_CURVE_SECP256R1));
+    status = psa_import_key(&attributes,
+                            p_pubkey,
+                            pubkey_size,
+                            p_key_handle);
+    if (status != PSA_SUCCESS) {
+        return psa_status_to_t_cose_error_signing(status);
+    }
+    return T_COSE_SUCCESS;
+}
+
+enum t_cose_err_t
+t_cose_get_pubkey(uint16_t key_handle, uint8_t *p_pubkey, size_t capacity, size_t *p_size) {
+    psa_export_public_key(key_handle, p_pubkey, capacity, p_size);
+}
 
 /*
  * See documentation in t_cose_crypto.h

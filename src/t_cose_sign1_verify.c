@@ -23,7 +23,21 @@
  * \brief \c COSE_Sign1 verification implementation.
  */
 
+void
+t_cose_sign1_verify_init(struct t_cose_sign1_verify_ctx *me,
+                         uint32_t                        option_flags)
+{
+    me->option_flags = option_flags;
+    me->verification_key = T_COSE_NULL_KEY;
+}
 
+
+void
+t_cose_sign1_set_verification_key(struct t_cose_sign1_verify_ctx *me,
+                                  struct t_cose_key               verification_key)
+{
+    me->verification_key = verification_key;
+}
 
 #ifndef T_COSE_DISABLE_SHORT_CIRCUIT_SIGN
 /**
@@ -62,6 +76,22 @@ Done:
 }
 #endif /* T_COSE_DISABLE_SHORT_CIRCUIT_SIGN */
 
+
+enum t_cose_err_t
+t_cose_sign1_verify_load_public_key(uint8_t const *p_pubkey,
+                                    size_t pubkey_size,
+                                    uint16_t *p_key_handle)
+{
+    enum t_cose_err_t ret_val = t_cose_load_pubkey(p_pubkey, pubkey_size, p_key_handle);
+    return ret_val;
+}
+
+enum t_cose_err_t
+t_cose_sign1_get_verification_pubkey(uint16_t key_handle,
+                                     uint8_t *p_pubkey, size_t capacity, size_t *p_size) {
+    enum t_cose_err_t ret_val = t_cose_get_pubkey(key_handle, p_pubkey, capacity, p_size);
+    return ret_val;
+}
 
 /*
  * Public function. See t_cose_sign1_verify.h

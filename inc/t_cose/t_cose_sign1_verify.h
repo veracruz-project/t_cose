@@ -154,6 +154,10 @@ struct t_cose_sign1_verify_ctx {
     uint32_t              option_flags;
 };
 
+enum t_cose_err_t
+t_cose_sign1_verify_load_public_key(uint8_t const *p_pubkey,
+                                    size_t pubkey_size,
+                                    uint16_t *p_key_handle);
 
 /**
  * \brief Initialize for \c COSE_Sign1 message verification.
@@ -163,7 +167,7 @@ struct t_cose_sign1_verify_ctx {
  *
  * This must be called before using the verification context.
  */
-static void
+void
 t_cose_sign1_verify_init(struct t_cose_sign1_verify_ctx *context,
                          uint32_t                        option_flags);
 
@@ -215,10 +219,13 @@ t_cose_sign1_verify_init(struct t_cose_sign1_verify_ctx *context,
  * adaptation layer because it never calls out to it. The OpenSSL
  * adaptor supports 1 and 2.
  */
-static void
+void
 t_cose_sign1_set_verification_key(struct t_cose_sign1_verify_ctx *context,
                                   struct t_cose_key               verification_key);
 
+enum t_cose_err_t
+t_cose_sign1_get_verification_pubkey(uint16_t key_handle,
+                                     uint8_t *p_pubkey, size_t capacity, size_t *p_size); 
 
 /**
  * \brief Verify a COSE_Sign1
@@ -271,28 +278,6 @@ enum t_cose_err_t t_cose_sign1_verify(struct t_cose_sign1_verify_ctx *context,
                                       struct q_useful_buf_c           sign1,
                                       struct q_useful_buf_c          *payload,
                                       struct t_cose_parameters       *parameters);
-
-
-
-
-/* ------------------------------------------------------------------------
- * Inline implementations of public functions defined above.
- */
-static inline void
-t_cose_sign1_verify_init(struct t_cose_sign1_verify_ctx *me,
-                         uint32_t                        option_flags)
-{
-    me->option_flags = option_flags;
-    me->verification_key = T_COSE_NULL_KEY;
-}
-
-
-static inline void
-t_cose_sign1_set_verification_key(struct t_cose_sign1_verify_ctx *me,
-                                  struct t_cose_key               verification_key)
-{
-    me->verification_key = verification_key;
-}
 
 
 #ifdef __cplusplus
