@@ -159,6 +159,9 @@ t_cose_sign1_verify_load_public_key(uint8_t const *p_pubkey,
                                     size_t pubkey_size,
                                     uint16_t *p_key_handle);
 
+enum t_cose_err_t
+t_cose_sign1_verify_delete_public_key(uint16_t *p_key_handle);
+
 /**
  * \brief Initialize for \c COSE_Sign1 message verification.
  *

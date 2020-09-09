@@ -218,11 +218,13 @@ t_cose_crypto_pub_key_sign(int32_t                cose_algorithm_id,
                            struct q_useful_buf    signature_buffer,
                            struct q_useful_buf_c *signature);
 
-
 enum t_cose_err_t
 t_cose_load_pubkey(uint8_t const *p_pubkey,
                    size_t pubkey_size,
                    uint16_t *p_key_handle);
+
+enum t_cose_err_t
+t_cose_delete_pubkey(uint16_t *p_key_handle);
 
 enum t_cose_err_t
 t_cose_get_pubkey(uint16_t key_handle, uint8_t *p_pubkey, size_t capactity, size_t *p_sizeey);

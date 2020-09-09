@@ -129,6 +129,16 @@ t_cose_load_pubkey(uint8_t const *p_pubkey,
 }
 
 enum t_cose_err_t
+t_cose_delete_pubkey(uint16_t *p_key_handle) {
+    psa_status_t status = psa_destroy_key(*p_key_handle);
+    if (status != PSA_SUCCESS) {
+        return psa_status_to_t_cose_error_signing(status);
+    }
+    *p_key_handle = 0;
+    return T_COSE_SUCCESS;
+}
+
+enum t_cose_err_t
 t_cose_get_pubkey(uint16_t key_handle, uint8_t *p_pubkey, size_t capacity, size_t *p_size) {
     psa_export_public_key(key_handle, p_pubkey, capacity, p_size);
 }
