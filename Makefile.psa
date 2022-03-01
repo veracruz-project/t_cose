@@ -25,10 +25,7 @@ QCBOR_LIB= -L $(OUT_DIR) -l qcbor
 
 # ---- crypto configuration -----
 
-# These two are for reference to MBed Crypto that has been installed in
-# /usr/local/ or in some system location.
-CRYPTO_LIB=-L ../mbed-crypto/library -l mbedcrypto
-CRYPTO_INC=-I ../mbed-crypto/include
+CRYPTO_INC= -I ../../../third-party/rust-psa-crypto/psa-crypto-sys/vendor/include
 
 CRYPTO_CONFIG_OPTS=-DT_COSE_USE_PSA_CRYPTO
 CRYPTO_OBJ=$(OUT_DIR)/t_cose_psa_crypto.o

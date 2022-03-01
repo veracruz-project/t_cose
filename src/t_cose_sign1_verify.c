@@ -80,21 +80,21 @@ Done:
 enum t_cose_err_t
 t_cose_sign1_verify_load_public_key(uint8_t const *p_pubkey,
                                     size_t pubkey_size,
-                                    uint16_t *p_key_handle)
+                                    uint32_t *p_key_handle)
 {
     enum t_cose_err_t ret_val = t_cose_load_pubkey(p_pubkey, pubkey_size, p_key_handle);
     return ret_val;
 }
 
 enum t_cose_err_t
-t_cose_sign1_verify_delete_public_key(uint16_t *p_key_handle)
+t_cose_sign1_verify_delete_public_key(uint32_t *p_key_handle)
 {
     enum t_cose_err_t ret_val = t_cose_delete_pubkey(p_key_handle);
     return ret_val;
 }
 
 enum t_cose_err_t
-t_cose_sign1_get_verification_pubkey(uint16_t key_handle,
+t_cose_sign1_get_verification_pubkey(uint32_t key_handle,
                                      uint8_t *p_pubkey, size_t capacity, size_t *p_size) {
     enum t_cose_err_t ret_val = t_cose_get_pubkey(key_handle, p_pubkey, capacity, p_size);
     return ret_val;

@@ -157,10 +157,10 @@ struct t_cose_sign1_verify_ctx {
 enum t_cose_err_t
 t_cose_sign1_verify_load_public_key(uint8_t const *p_pubkey,
                                     size_t pubkey_size,
-                                    uint16_t *p_key_handle);
+                                    uint32_t *p_key_handle);
 
 enum t_cose_err_t
-t_cose_sign1_verify_delete_public_key(uint16_t *p_key_handle);
+t_cose_sign1_verify_delete_public_key(uint32_t *p_key_handle);
 
 /**
  * \brief Initialize for \c COSE_Sign1 message verification.
@@ -227,7 +227,7 @@ t_cose_sign1_set_verification_key(struct t_cose_sign1_verify_ctx *context,
                                   struct t_cose_key               verification_key);
 
 enum t_cose_err_t
-t_cose_sign1_get_verification_pubkey(uint16_t key_handle,
+t_cose_sign1_get_verification_pubkey(uint32_t key_handle,
                                      uint8_t *p_pubkey, size_t capacity, size_t *p_size); 
 
 /**

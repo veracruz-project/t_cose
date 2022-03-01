@@ -99,14 +99,14 @@ static enum t_cose_err_t psa_status_to_t_cose_error_signing(psa_status_t err)
            err == PSA_ERROR_INVALID_SIGNATURE   ? T_COSE_ERR_SIG_VERIFY :
            err == PSA_ERROR_NOT_SUPPORTED       ? T_COSE_ERR_UNSUPPORTED_SIGNING_ALG:
            err == PSA_ERROR_INSUFFICIENT_MEMORY ? T_COSE_ERR_INSUFFICIENT_MEMORY :
-           err == PSA_ERROR_TAMPERING_DETECTED  ? T_COSE_ERR_TAMPERING_DETECTED :
+           err == PSA_ERROR_CORRUPTION_DETECTED ? T_COSE_ERR_TAMPERING_DETECTED :
                                                   T_COSE_ERR_SIG_FAIL;
 }
 
 enum t_cose_err_t
 t_cose_load_pubkey(uint8_t const *p_pubkey,
                    size_t pubkey_size,
-                   uint16_t *p_key_handle) {
+                   uint32_t *p_key_handle) {
     psa_status_t status;
 
     status = psa_crypto_init();
@@ -117,7 +117,7 @@ t_cose_load_pubkey(uint8_t const *p_pubkey,
     psa_key_attributes_t attributes = psa_key_attributes_init();
     psa_set_key_usage_flags(&attributes, PSA_KEY_USAGE_VERIFY_HASH );
     psa_set_key_algorithm(&attributes, PSA_ALG_ECDSA(PSA_ALG_SHA_256));
-    psa_set_key_type(&attributes, PSA_KEY_TYPE_ECC_PUBLIC_KEY(PSA_ECC_CURVE_SECP256R1));
+    psa_set_key_type(&attributes, PSA_KEY_TYPE_ECC_PUBLIC_KEY(PSA_ECC_FAMILY_SECP_R1));
     status = psa_import_key(&attributes,
                             p_pubkey,
                             pubkey_size,
@@ -129,7 +129,7 @@ t_cose_load_pubkey(uint8_t const *p_pubkey,
 }
 
 enum t_cose_err_t
-t_cose_delete_pubkey(uint16_t *p_key_handle) {
+t_cose_delete_pubkey(uint32_t *p_key_handle) {
     psa_status_t status = psa_destroy_key(*p_key_handle);
     if (status != PSA_SUCCESS) {
         return psa_status_to_t_cose_error_signing(status);
@@ -139,7 +139,7 @@ t_cose_delete_pubkey(uint16_t *p_key_handle) {
 }
 
 enum t_cose_err_t
-t_cose_get_pubkey(uint16_t key_handle, uint8_t *p_pubkey, size_t capacity, size_t *p_size) {
+t_cose_get_pubkey(uint32_t key_handle, uint8_t *p_pubkey, size_t capacity, size_t *p_size) {
     psa_export_public_key(key_handle, p_pubkey, capacity, p_size);
 }
 
@@ -191,12 +191,12 @@ t_cose_crypto_pub_key_verify(int32_t               cose_algorithm_id,
      * Crypto ceases providing backwards compatibility then this code
      * has to be changed to use psa_verify_hash().
      */
-    psa_result = psa_asymmetric_verify(verification_key_psa,
-                                       psa_alg_id,
-                                       hash_to_verify.ptr,
-                                       hash_to_verify.len,
-                                       signature.ptr,
-                                       signature.len);
+    psa_result = psa_verify_hash(verification_key_psa,
+                                 psa_alg_id,
+                                 hash_to_verify.ptr,
+                                 hash_to_verify.len,
+                                 signature.ptr,
+                                 signature.len);
 
     return_value = psa_status_to_t_cose_error_signing(psa_result);
 
@@ -251,13 +251,13 @@ t_cose_crypto_pub_key_sign(int32_t                cose_algorithm_id,
      * providing backwards compatibility then this code has to be
      * changed to use psa_sign_hash().
      */
-    psa_result = psa_asymmetric_sign(signing_key_psa,
-                                     psa_alg_id,
-                                     hash_to_sign.ptr,
-                                     hash_to_sign.len,
-                                     signature_buffer.ptr, /* Sig buf */
-                                     signature_buffer.len, /* Sig buf size */
-                                    &signature_len);       /* Sig length */
+    psa_result = psa_sign_hash(signing_key_psa,
+                               psa_alg_id,
+                               hash_to_sign.ptr,
+                               hash_to_sign.len,
+                               signature_buffer.ptr, /* Sig buf */
+                               signature_buffer.len, /* Sig buf size */
+                              &signature_len);       /* Sig length */
 
     return_value = psa_status_to_t_cose_error_signing(psa_result);
 
